@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 async function mintTokens() {
   const ERC20_CONTRACT_NAME = "PlatformToken";
-  const TokenAddress = "";
+  const TokenAddress = "0x3295DE22A696a32026b1F106899f483FfEA8F5d9";
   const sender = new ethers.Wallet(
     process.env.DEPLOYER_ACCOUNT_PRIV_KEY as any,
     ethers.provider

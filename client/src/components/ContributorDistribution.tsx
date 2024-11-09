@@ -5,8 +5,9 @@ import { Contributor } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { ethers } from "ethers";
-import { useWriteContract } from 'wagmi';
+import { useWriteContract, useAccount } from "wagmi";
 import { tokenAbi, mainContract, mainContractABI } from "@/constant/index";
+import Image from "next/image";
 interface ContributorDistributionProps {
   repositoryId: string;
   accessToken?: string;
@@ -16,6 +17,7 @@ export function ContributorDistribution({
   repositoryId,
   accessToken,
 }: ContributorDistributionProps) {
+  const { address, chain } = useAccount();
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +27,9 @@ export function ContributorDistribution({
   >({});
 
   const [percentageArray, setPercentageArray] = useState<number[]>([]);
-  const [contributersAddressArray, setContributersAddressArray] = useState<string[]>([]);
+  const [contributersAddressArray, setContributersAddressArray] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     async function fetchContributors() {
@@ -50,24 +54,35 @@ export function ContributorDistribution({
 
   const { writeContract } = useWriteContract();
 
-  const addContributors = async (contributors: string[] , walletAddresses : string[] , totalBounty:number) => {
+  const addContributors = async (
+    contributors: any[],
+    walletAddresses: any,
+    totalBounty: number,
+    tokenAddress: any
+  ) => {
     let getPercentageArray = contributors.map((contributor) => {
       return contributor?.contributionPercentage;
     });
+    let _walletAddresses = Object.values(walletAddresses);
+    console.log("Wallet Addresses", _walletAddresses, contributors);
     setPercentageArray(getPercentageArray);
-    if(contributors.length !== walletAddresses.length){
+    if (contributors.length !== _walletAddresses.length) {
       console.log("Contributors and Wallet Addresses length should be same");
       return;
     }
-
     writeContract({
       mainContractABI,
       address: mainContract,
       functionName: "addProjectContributions",
-      args: [walletAddresses,],
+      args: [
+        _walletAddresses,
+        address,
+        percentageArray,
+        totalBounty,
+        "0x3295DE22A696a32026b1F106899f483FfEA8F5d9",
+      ],
     });
   };
-
 
   const handleWalletAddressChange = (
     contributorId: string,
@@ -86,22 +101,6 @@ export function ContributorDistribution({
       return false;
     }
   };
-
-  async function distributeBounty({
-    contributors,
-    walletAddresses,
-    totalBounty,
-  }: {
-    contributors: Contributor[];
-    walletAddresses: Record<string, string>;
-    totalBounty: number;
-  }) {
-    console.log("Distribution data:", {
-      contributors,
-      walletAddresses,
-      totalBounty,
-    });
-  }
 
   if (loading) {
     return (
@@ -203,15 +202,13 @@ export function ContributorDistribution({
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={() => {
-<<<<<<< HEAD
-              addContributors(contributors,walletAddresses,totalBounty)
-=======
-              distributeBounty({
-                contributors,
-                walletAddresses,
-                totalBounty,
-              });
->>>>>>> eedca05c839da8150635b48a8df332dae12b214a
+              // console.log("Distribute bounty",
+              //   contributors,
+              //   address,
+              //   totalBounty,
+              //   walletAddresses
+              //   );
+              addContributors(contributors, walletAddresses, totalBounty, "ox");
             }}
           >
             Distribute Bounty
