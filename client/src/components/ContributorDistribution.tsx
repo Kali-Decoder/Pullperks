@@ -5,9 +5,10 @@ import { Contributor } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { ethers } from "ethers";
-import { useWriteContract, useAccount } from "wagmi";
+import { useWriteContract, useAccount, useReadContract } from "wagmi";
 import { tokenAbi, mainContract, mainContractABI } from "@/constant/index";
 import Image from "next/image";
+
 interface ContributorDistributionProps {
   repositoryId: string;
   accessToken?: string;
@@ -25,11 +26,9 @@ export function ContributorDistribution({
   const [walletAddresses, setWalletAddresses] = useState<
     Record<string, string>
   >({});
+  const [tokenAddress, setTokenAddress] = useState("");
 
   const [percentageArray, setPercentageArray] = useState<number[]>([]);
-  const [contributersAddressArray, setContributersAddressArray] = useState<
-    string[]
-  >([]);
 
   useEffect(() => {
     async function fetchContributors() {
@@ -52,36 +51,56 @@ export function ContributorDistribution({
     }
   }, [repositoryId, accessToken]);
 
-  const { writeContract } = useWriteContract();
+  const {
+    data: hash,
+    error: hashError, 
+    isPending,
+    isError,
+    writeContract,
+  } = useWriteContract();
 
   const addContributors = async (
     contributors: any[],
     walletAddresses: any,
-    totalBounty: number,
-    tokenAddress: any
+    totalBounty: number
   ) => {
     let getPercentageArray = contributors.map((contributor) => {
       return contributor?.contributionPercentage;
     });
     let _walletAddresses = Object.values(walletAddresses);
-    console.log("Wallet Addresses", _walletAddresses, contributors);
+    console.log(
+      "Wallet Addresses",
+      _walletAddresses,
+      contributors,
+      tokenAddress
+    );
+    console.log("_walletAddresses Array", _walletAddresses);
     setPercentageArray(getPercentageArray);
     if (contributors.length !== _walletAddresses.length) {
       console.log("Contributors and Wallet Addresses length should be same");
       return;
     }
-    writeContract({
-      mainContractABI,
-      address: mainContract,
-      functionName: "addProjectContributions",
-      args: [
-        _walletAddresses,
-        address,
-        percentageArray,
-        totalBounty,
-        "0x3295DE22A696a32026b1F106899f483FfEA8F5d9",
-      ],
-    });
+    if (!tokenAddress) {
+      console.log("Token Address is required");
+      return;
+    }
+    try {
+      const result = await writeContract({
+        abi: mainContractABI,
+        address: mainContract,
+        functionName: "addProjectContributions",
+        args: [
+          _walletAddresses,
+          address,
+          percentageArray,
+          totalBounty,
+          tokenAddress,
+        ],
+      });
+      console.log("Transaction successful:", result);
+    } catch (error) {
+      console.error("Error in writeContract:", error);
+    }
   };
 
   const handleWalletAddressChange = (
@@ -131,8 +150,10 @@ export function ContributorDistribution({
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold">Contribution Distribution</h2>
+
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-500">Total Bounty (ETH):</span>
+            <span className="text-sm text-gray-500">Total Bounty</span>
+
             <Input
               type="number"
               min="0"
@@ -141,6 +162,27 @@ export function ContributorDistribution({
               onChange={(e) => setTotalBounty(Number(e.target.value))}
               className="w-24"
             />
+
+            <Input
+              type="text"
+              value={tokenAddress}
+              placeholder="Bounty Token Address"
+              onChange={(e) => setTokenAddress(e.target.value)}
+              className="w-64"
+            />
+
+            {/* <Select onValueChange={setToken} value={token}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Token" />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value="USDC">USDC</SelectItem>
+                <SelectItem value="USDT">USDT</SelectItem>
+                <SelectItem value="ETH">ETH</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select> */}
           </div>
         </div>
 
@@ -158,6 +200,7 @@ export function ContributorDistribution({
                   height={10}
                   width={10}
                 />
+
                 <div>
                   <h3 className="font-medium">{contributor.login}</h3>
                   <div className="text-sm text-gray-500">
@@ -201,14 +244,14 @@ export function ContributorDistribution({
         <div className="mt-6 flex justify-end">
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            onClick={() => {
+            onClick={async () => {
               // console.log("Distribute bounty",
               //   contributors,
               //   address,
               //   totalBounty,
               //   walletAddresses
               //   );
-              addContributors(contributors, walletAddresses, totalBounty, "ox");
+              await addContributors(contributors, walletAddresses, totalBounty);
             }}
           >
             Distribute Bounty
