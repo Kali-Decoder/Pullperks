@@ -32,7 +32,7 @@ export function ContributorDistribution({
   const [walletAddresses, setWalletAddresses] = useState<
     Record<string, string>
   >({});
-  const [token, setToken] = useState("USDC");
+  const [tokenAddress, setTokenAddress] = useState("");
 
   const [percentageArray, setPercentageArray] = useState<number[]>([]);
   const [contributersAddressArray, setContributersAddressArray] = useState<
@@ -160,7 +160,15 @@ export function ContributorDistribution({
               className="w-24"
             />
 
-            <Select onValueChange={setToken} value={token}>
+            <Input
+              type="text"
+              value={tokenAddress}
+              placeholder="Bounty Token Address"
+              onChange={(e) => setTokenAddress(e.target.value)}
+              className="w-64"
+            />
+
+            {/* <Select onValueChange={setToken} value={token}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Token" />
               </SelectTrigger>
@@ -171,7 +179,7 @@ export function ContributorDistribution({
                 <SelectItem value="ETH">ETH</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
           </div>
         </div>
 
