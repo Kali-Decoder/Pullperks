@@ -5,8 +5,17 @@ import { Contributor } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { ethers } from "ethers";
-import { useWriteContract } from 'wagmi';
+import { useWriteContract } from "wagmi";
 import { tokenAbi, mainContract, mainContractABI } from "@/constant/index";
+import Image from "next/image";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 interface ContributorDistributionProps {
   repositoryId: string;
   accessToken?: string;
@@ -23,9 +32,12 @@ export function ContributorDistribution({
   const [walletAddresses, setWalletAddresses] = useState<
     Record<string, string>
   >({});
+  const [token, setToken] = useState("USDC");
 
   const [percentageArray, setPercentageArray] = useState<number[]>([]);
-  const [contributersAddressArray, setContributersAddressArray] = useState<string[]>([]);
+  const [contributersAddressArray, setContributersAddressArray] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     async function fetchContributors() {
@@ -50,12 +62,16 @@ export function ContributorDistribution({
 
   const { writeContract } = useWriteContract();
 
-  const addContributors = async (contributors: string[] , walletAddresses : string[] , totalBounty:number) => {
+  const addContributors = async (
+    contributors: string[],
+    walletAddresses: string[],
+    totalBounty: number
+  ) => {
     let getPercentageArray = contributors.map((contributor) => {
       return contributor?.contributionPercentage;
     });
     setPercentageArray(getPercentageArray);
-    if(contributors.length !== walletAddresses.length){
+    if (contributors.length !== walletAddresses.length) {
       console.log("Contributors and Wallet Addresses length should be same");
       return;
     }
@@ -64,10 +80,9 @@ export function ContributorDistribution({
       mainContractABI,
       address: mainContract,
       functionName: "addProjectContributions",
-      args: [walletAddresses,],
+      args: [walletAddresses],
     });
   };
-
 
   const handleWalletAddressChange = (
     contributorId: string,
@@ -132,8 +147,10 @@ export function ContributorDistribution({
       <div className="bg-white p-6 rounded-lg shadow-sm">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold">Contribution Distribution</h2>
+
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-500">Total Bounty (ETH):</span>
+            <span className="text-sm text-gray-500">Total Bounty</span>
+
             <Input
               type="number"
               min="0"
@@ -142,6 +159,19 @@ export function ContributorDistribution({
               onChange={(e) => setTotalBounty(Number(e.target.value))}
               className="w-24"
             />
+
+            <Select onValueChange={setToken} value={token}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Token" />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value="USDC">USDC</SelectItem>
+                <SelectItem value="USDT">USDT</SelectItem>
+                <SelectItem value="ETH">ETH</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -159,6 +189,7 @@ export function ContributorDistribution({
                   height={10}
                   width={10}
                 />
+
                 <div>
                   <h3 className="font-medium">{contributor.login}</h3>
                   <div className="text-sm text-gray-500">
@@ -203,15 +234,7 @@ export function ContributorDistribution({
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={() => {
-<<<<<<< HEAD
-              addContributors(contributors,walletAddresses,totalBounty)
-=======
-              distributeBounty({
-                contributors,
-                walletAddresses,
-                totalBounty,
-              });
->>>>>>> eedca05c839da8150635b48a8df332dae12b214a
+              addContributors(contributors, walletAddresses, totalBounty);
             }}
           >
             Distribute Bounty
