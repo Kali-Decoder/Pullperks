@@ -2,10 +2,11 @@ import { AuthOptions } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
 export const authOptions: AuthOptions = {
+  secret: process.env.SECRET!,
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
       authorization: {
         params: {
           // Request additional GitHub scopes
@@ -21,12 +22,14 @@ export const authOptions: AuthOptions = {
         token.accessToken = account.access_token;
         token.githubId = profile?.id;
       }
+
       return token;
     },
     async session({ session, token }) {
       // Send properties to the client
       session.accessToken = token.accessToken as string;
       session.githubId = token.githubId as string;
+
       return session;
     },
   },
