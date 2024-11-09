@@ -97,6 +97,10 @@ module.exports = {
       chainId: 84532,
       url: "https://sepolia.base.org",
       accounts: ACCOUNTS,
+    }, open_campus: {
+      chainId: 656476,
+      url: "https://rpc.open-campus-codex.gelato.digital/",
+      accounts: ACCOUNTS,
     },
 
     polygonAmoy: {

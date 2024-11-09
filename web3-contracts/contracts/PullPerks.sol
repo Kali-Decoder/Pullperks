@@ -19,9 +19,14 @@ contract PullPerks is Ownable {
 
     // Event to log distribution details
     event Distributed(address indexed contributor, uint256 amount);
-    event ProjectAdded(uint256 projectId, address admin, uint256 totalTokenAmount, address token);
-    constructor() Ownable(msg.sender) {
-    }
+    event ProjectAdded(
+        uint256 projectId,
+        address admin,
+        uint256 totalTokenAmount,
+        address token
+    );
+
+    constructor() Ownable(msg.sender) {}
 
     function addProjectContributions(
         address[] memory _contributors,
