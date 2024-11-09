@@ -5,6 +5,7 @@ import { Contributor } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { ethers } from "ethers";
+import Image from "next/image";
 
 interface ContributorDistributionProps {
   repositoryId: string;
@@ -62,6 +63,22 @@ export function ContributorDistribution({
     }
   };
 
+  async function distributeBounty({
+    contributors,
+    walletAddresses,
+    totalBounty,
+  }: {
+    contributors: Contributor[];
+    walletAddresses: Record<string, string>;
+    totalBounty: number;
+  }) {
+    console.log("Distribution data:", {
+      contributors,
+      walletAddresses,
+      totalBounty,
+    });
+  }
+
   if (loading) {
     return (
       <div className="space-y-4">
@@ -111,10 +128,12 @@ export function ContributorDistribution({
               className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
             >
               <div className="flex items-center space-x-4">
-                <img
+                <Image
                   src={contributor.avatarUrl}
                   alt={contributor.login}
                   className="w-10 h-10 rounded-full"
+                  height={10}
+                  width={10}
                 />
                 <div>
                   <h3 className="font-medium">{contributor.login}</h3>
@@ -131,7 +150,8 @@ export function ContributorDistribution({
                 <div className="text-right">
                   <div className="font-medium">
                     {(
-                      (totalBounty * contributor.contributionPercentage) /
+                      (totalBounty *
+                        (contributor.contributionPercentage ?? 0)) /
                       100
                     ).toFixed(4)}{" "}
                     ETH
@@ -159,8 +179,7 @@ export function ContributorDistribution({
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={() => {
-              // TODO: Implement distribution logic
-              console.log("Distribution data:", {
+              distributeBounty({
                 contributors,
                 walletAddresses,
                 totalBounty,
