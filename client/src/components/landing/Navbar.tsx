@@ -18,7 +18,7 @@ export function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <span className="text-2xl font-bold text-indigo-600">
-                Educhain
+                PullPerks
               </span>
             </Link>
           </div>
