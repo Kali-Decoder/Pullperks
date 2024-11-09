@@ -23,7 +23,7 @@ contract PullPerks is Ownable {
     constructor() Ownable(msg.sender) {
     }
 
-    function addContributor(
+    function addProjectContributions(
         address[] memory _contributors,
         address _admin,
         uint256[] memory _percentages,
