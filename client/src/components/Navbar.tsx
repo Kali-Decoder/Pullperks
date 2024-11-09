@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 // import { Github } from "lucide-react";
 import Image from "next/image";
 
@@ -32,6 +33,7 @@ export function Navbar() {
               >
                 Active Bounties
               </Link>
+              <ConnectButton />
             </div>
           </div>
 
