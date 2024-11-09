@@ -99,6 +99,10 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         );
         await tx.wait();
       }
+
+      let tx2 = await contract.distributeFunds(0);
+      await tx2.wait();
+
     } catch (error) {
       console.log("Error in distributing funds");
       console.log(error);
