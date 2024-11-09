@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background Layer - Hexagon with Gradient -->
+  <defs>
+    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5" />
+      <stop offset="100%" style="stop-color:#4338CA" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Hexagon -->
+  <polygon 
+    points="100,20 170,60 170,140 100,180 30,140 30,60" 
+    fill="url(#hexGradient)" 
+  />
+  
+  <!-- Middle Layer - Inner Hexagon -->
+  <polygon 
+    points="100,40 150,70 150,130 100,160 50,130 50,70" 
+    fill="#6366F1" 
+    opacity="0.9"
+  />
+  
+  <!-- GitHub Octocat Silhouette - Simplified -->
+  <path 
+    d="M100,65 C79,65 62,82 62,103 C62,120 72,134 87,139 C89,139 90,138 90,137 C90,136 90,133 90,130 C80,132 77,124 77,124 C75,120 72,118 72,118 C69,115 73,115 73,115 C76,115 78,118 78,118 C81,123 86,124 89,124 C90,121 91,119 92,118 C84,117 75,113 75,98 C75,93 77,89 79,86 C79,85 78,82 80,77 C80,77 84,76 90,80 C93,79 96,79 100,79 C103,79 107,79 110,80 C116,76 120,77 120,77 C122,82 121,85 120,86 C123,89 125,93 125,98 C125,113 116,117 108,118 C109,119 110,122 110,126 C110,132 110,136 110,137 C110,138 111,139 113,139 C128,134 138,120 138,103 C138,82 121,65 100,65"
+    fill="#FFFFFF"
+    class="github-cat"
+  />
+  
+  <!-- Ethereum Symbol -->
+  <text 
+    x="100" 
+    y="145" 
+    text-anchor="middle" 
+    fill="#FFFFFF" 
+    font-family="Arial" 
+    font-weight="bold" 
+    font-size="14"
+  >Ξ</text>
+</svg>

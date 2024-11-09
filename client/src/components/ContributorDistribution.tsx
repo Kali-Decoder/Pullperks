@@ -54,6 +54,14 @@ export function ContributorDistribution({
     }
   }, [repositoryId, accessToken]);
 
+  const {
+    data: hash,
+    error: hashError,
+    isPending,
+    isError,
+    writeContract,
+  } = useWriteContract();
+
   const addContributors = async (
     contributors: any[],
     walletAddresses: any,

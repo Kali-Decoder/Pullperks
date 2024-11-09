@@ -8,6 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const { id } = await params;
   try {
     const session = await getServerSession(authOptions);
 
@@ -19,7 +20,7 @@ export async function GET(
 
     // First get the repository by ID
     const { data: repoData } = await octokit.request("GET /repositories/{id}", {
-      id: params.id,
+      id: id,
     });
 
     // Get additional repository details using the full name
