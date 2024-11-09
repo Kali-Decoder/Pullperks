@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect, ReactNode } from "react";
 import { useAccount } from "wagmi";
-import { ethers,  Contract } from "ethers";
-import { useWalletClient } from 'wagmi'
+import { ethers, Contract } from "ethers";
+import { useWalletClient } from "wagmi";
 import toast from "react-hot-toast";
 import { tokenAbi } from "@/constant/index";
+import { useEthersSigner } from "@/utils/signer";
 
+import { mainContract, mainContractABI } from "@/constant/index";
 // Context types
 interface DataContextProps {}
 
@@ -28,23 +30,24 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     chain?.id
   );
   const { data: walletClient, isError, isLoading } = useWalletClient();
-  
+
   useEffect(() => {
     setActiveChainId(chain?.id);
   }, [chain?.id]);
 
-
+  const signer = useEthersSigner({ chainId: activeChain });
 
   const getContractInstance = async (
     contractAddress: string,
     contractAbi: any
   ): Promise<Contract | undefined> => {
     try {
-      const contractInstance = new ethers.Contract(
+      const contractInstance = await new ethers.Contract(
         contractAddress,
         contractAbi,
-        walletClient
+        signer
       );
+      console.log("Contract instance", contractInstance);
       return contractInstance;
     } catch (error) {
       console.log("Error in deploying contract");
@@ -68,11 +71,53 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     }
   };
 
-  useEffect(() => {
-    console.log("Token balance", walletClient);
-  }, []);
+  const distributeFunds = async (
+    _walletAddresses: any,
+    address: any,
+    percentageArray: any,
+    totalBounty: any,
+    tokenAddress: any
+  ) => {
+    try {
+      let contract = await getContractInstance(mainContract, mainContractABI);
+      let tokenContract = await getContractInstance(tokenAddress, tokenAbi);
+      let allowance = await tokenContract.allowance(address, mainContract);
+      let totalAmount = ethers.utils.parseEther(totalBounty.toString());
+      if (allowance < totalAmount) {
+        let tx = await tokenContract.approve(mainContract, totalAmount);
+        await tx.wait();
+      }
+      console.log("Total amount", totalAmount);
+      console.log( _walletAddresses, address, percentageArray, totalAmount, tokenAddress);
+      if (contract) {
+        let tx = await contract.addProjectContributions(
+          _walletAddresses,
+          address,
+          percentageArray,
+          totalAmount,
+          tokenAddress
+        );
+        await tx.wait();
+      }
+    } catch (error) {
+      console.log("Error in distributing funds");
+      console.log(error);
+    }
+  };
 
-  return <DataContext.Provider value={{}}>{children}</DataContext.Provider>;
+  useEffect(() => {
+    if (!signer) return;
+  }, [signer]);
+
+  return (
+    <DataContext.Provider
+      value={{
+        distributeFunds,
+      }}
+    >
+      {children}
+    </DataContext.Provider>
+  );
 };
 
 export const useDataContext = () => {

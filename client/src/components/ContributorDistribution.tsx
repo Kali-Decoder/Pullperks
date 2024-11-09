@@ -5,9 +5,10 @@ import { Contributor } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { ethers } from "ethers";
-import { useWriteContract, useAccount, useReadContract } from "wagmi";
-import { tokenAbi, mainContract, mainContractABI } from "@/constant/index";
+import { useAccount } from "wagmi";
+
 import Image from "next/image";
+import { useDataContext } from "@/context/UserContext";
 
 interface ContributorDistributionProps {
   repositoryId: string;
@@ -26,6 +27,8 @@ export function ContributorDistribution({
   const [walletAddresses, setWalletAddresses] = useState<
     Record<string, string>
   >({});
+
+  const { distributeFunds } = useDataContext();
   const [tokenAddress, setTokenAddress] = useState("");
 
   const [percentageArray, setPercentageArray] = useState<number[]>([]);
@@ -51,21 +54,13 @@ export function ContributorDistribution({
     }
   }, [repositoryId, accessToken]);
 
-  const {
-    data: hash,
-    error: hashError, 
-    isPending,
-    isError,
-    writeContract,
-  } = useWriteContract();
-
   const addContributors = async (
     contributors: any[],
     walletAddresses: any,
     totalBounty: number
   ) => {
     let getPercentageArray = contributors.map((contributor) => {
-      return contributor?.contributionPercentage;
+      return Math.floor(contributor?.contributionPercentage);
     });
     let _walletAddresses = Object.values(walletAddresses);
     console.log(
@@ -84,23 +79,14 @@ export function ContributorDistribution({
       console.log("Token Address is required");
       return;
     }
-    try {
-      const result = await writeContract({
-        abi: mainContractABI,
-        address: mainContract,
-        functionName: "addProjectContributions",
-        args: [
-          _walletAddresses,
-          address,
-          percentageArray,
-          totalBounty,
-          tokenAddress,
-        ],
-      });
-      console.log("Transaction successful:", result);
-    } catch (error) {
-      console.error("Error in writeContract:", error);
-    }
+
+    await distributeFunds(
+      _walletAddresses,
+      address,
+      getPercentageArray,
+      totalBounty,
+      tokenAddress
+    );
   };
 
   const handleWalletAddressChange = (
