@@ -16,18 +16,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider
-          theme={darkTheme({
-            accentColor: "#0C1838",
-            accentColorForeground: "black",
-            borderRadius: "small",
-            fontStack: "system",
-            overlayBlur: "small",
-          })}
-        >
+        <RainbowKitProvider>
           <ChainProvider>
             <DataContextProvider>
-              {" "}
               <SessionProvider>{mounted && children}</SessionProvider>
             </DataContextProvider>
           </ChainProvider>
