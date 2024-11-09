@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 // import { Github } from "lucide-react";
 import Image from "next/image";
 
@@ -14,27 +14,20 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link href="/dashboard" className="flex items-center">
-              {/* <Github className="h-8 w-8 mr-2" /> */}
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/logo.svg"
+                height={10}
+                width={10}
+                alt=""
+                className="h-16 w-16"
+              />
               <span className="text-xl font-bold">PullPerks</span>
             </Link>
+          </div>
 
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link
-                href="/dashboard"
-                className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Repositories
-              </Link>
-
-              <Link
-                href="/dashboard/bounties"
-                className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Active Bounties
-              </Link>
-              <ConnectButton />
-            </div>
+          <div className="flex justify-center items-center flex-1 flex-grow">
+            <ConnectButton />
           </div>
 
           <div className="flex items-center">

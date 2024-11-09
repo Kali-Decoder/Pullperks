@@ -88,7 +88,13 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         await tx.wait();
       }
       console.log("Total amount", totalAmount);
-      console.log( _walletAddresses, address, percentageArray, totalAmount, tokenAddress);
+      console.log(
+        _walletAddresses,
+        address,
+        percentageArray,
+        totalAmount,
+        tokenAddress
+      );
       if (contract) {
         let tx = await contract.addProjectContributions(
           _walletAddresses,
@@ -100,9 +106,8 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         await tx.wait();
       }
 
-      let tx2 = await contract.distributeFunds(0);
+      let tx2 = await contract.distributeFunds(1);
       await tx2.wait();
-
     } catch (error) {
       console.log("Error in distributing funds");
       console.log(error);

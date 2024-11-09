@@ -5,7 +5,7 @@ import { Contributor } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { ethers } from "ethers";
-import { useAccount } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 
 import Image from "next/image";
 import { useDataContext } from "@/context/UserContext";
