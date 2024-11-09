@@ -8,11 +8,13 @@ export default async function RepositoryPage({
 }: {
   params: { id: string };
 }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   return (
     <div className="space-y-6">
-      <RepositoryHeader repositoryId={params.id} />
+      <RepositoryHeader repositoryId={id} />
+
       <ContributorDistribution
         repositoryId={params.id}
         accessToken={session?.accessToken}

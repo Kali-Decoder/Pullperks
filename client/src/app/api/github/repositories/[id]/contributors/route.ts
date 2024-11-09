@@ -9,6 +9,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const { id } = await params;
+
     const session = await getServerSession(authOptions);
     if (!session?.accessToken) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -18,7 +20,7 @@ export async function GET(
 
     // First get repository details to get full name
     const { data: repo } = await octokit.request("GET /repositories/{id}", {
-      id: params.id,
+      id: id,
     });
 
     // Get all contributors
@@ -57,24 +59,26 @@ export async function GET(
           }
         );
 
+        // TODO: Fix reviews
         // Get review stats
-        const { data: reviews } = await octokit.request(
-          "GET /repos/{owner}/{repo}/pulls/reviews",
-          {
-            owner: repo.owner.login,
-            repo: repo.name,
-            per_page: 100,
-          }
-        );
+        // const { data: reviews } = await octokit.request(
+        //   "GET /repos/{owner}/{repo}/pulls/reviews",
+        //   {
+        //     owner: repo.owner.login,
+        //     repo: repo.name,
+        //     per_page: 100,
+        //   }
+        // );
 
-        const contributorReviews = reviews.filter(
-          (review) => review.user?.login === contributor.login
-        );
+        // const contributorReviews = reviews.filter(
+        //   (review) => review.user?.login === contributor.login
+        // );
 
         const stats: ContributionStats = {
           commits: commits.length,
           pullRequests: prs.length,
-          reviews: contributorReviews.length,
+          // reviews: contributorReviews.length,
+          reviews: 0,
           linesAdded: 0,
           linesDeleted: 0,
           filesChanged: 0,
@@ -83,13 +87,15 @@ export async function GET(
         // Calculate contribution score
         const score = calculateContributionScore(stats);
 
-        return {
-          id: contributor.id.toString(),
+        const result = {
+          id: contributor.id?.toString() ?? "",
           login: contributor.login,
           avatarUrl: contributor.avatar_url,
           contributions: stats,
           contributionScore: score,
         };
+
+        return result;
       })
     );
 

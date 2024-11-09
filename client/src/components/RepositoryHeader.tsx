@@ -16,9 +16,12 @@ export function RepositoryHeader({ repositoryId }: RepositoryHeaderProps) {
     async function fetchRepository() {
       try {
         const response = await fetch(
-          `/api/github/repositories/${repositoryId}`
+          `/api/github/repositories/${repositoryId}/`
         );
         const data = await response.json();
+
+        console.log(data);
+
         setRepository(data);
       } catch (error) {
         console.error("Error fetching repository:", error);
