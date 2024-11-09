@@ -2,8 +2,7 @@ import { Providers } from "@/components/Providers";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import '@rainbow-me/rainbowkit/styles.css';
-
+import "@rainbow-me/rainbowkit/styles.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <main className="min-h-screen bg-gray-50">
-            <nav className="bg-white shadow-sm">
+            {/* <nav className="bg-white shadow-sm">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                   <div className="flex">
@@ -32,7 +31,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </div>
-            </nav>
+            </nav> */}
             {children}
           </main>
         </Providers>

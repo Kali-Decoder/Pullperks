@@ -16,7 +16,7 @@ export default async function RepositoryPage({
       <RepositoryHeader repositoryId={id} />
 
       <ContributorDistribution
-        repositoryId={params.id}
+        repositoryId={id}
         accessToken={session?.accessToken}
       />
     </div>
