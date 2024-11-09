@@ -5,6 +5,7 @@ import Link from "next/link";
 // import { WalletConnect } from "../WalletConnect";
 import { useSession } from "next-auth/react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Button } from "../ui/button";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -44,7 +45,14 @@ export function Navbar() {
                   Dashboard
                 </Link>
               ) : (
-                <ConnectButton />
+                <Link href="/auth/signin">
+                  <Button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-white bg-indigo-600 hover:bg-indigo-700"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
               )}
             </div>
           </div>
