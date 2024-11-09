@@ -16,7 +16,7 @@ export function Navbar() {
           <div className="flex items-center">
             <Link href="/dashboard" className="flex items-center">
               {/* <Github className="h-8 w-8 mr-2" /> */}
-              <span className="text-xl font-bold">Educhain</span>
+              <span className="text-xl font-bold">PullPerks</span>
             </Link>
 
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">

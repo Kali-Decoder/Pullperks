@@ -5,7 +5,8 @@ import { Contributor } from "@/types";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { ethers } from "ethers";
-
+import { useWriteContract } from 'wagmi';
+import { tokenAbi, mainContract, mainContractABI } from "@/constant/index";
 interface ContributorDistributionProps {
   repositoryId: string;
   accessToken?: string;
@@ -22,6 +23,9 @@ export function ContributorDistribution({
   const [walletAddresses, setWalletAddresses] = useState<
     Record<string, string>
   >({});
+
+  const [percentageArray, setPercentageArray] = useState<number[]>([]);
+  const [contributersAddressArray, setContributersAddressArray] = useState<string[]>([]);
 
   useEffect(() => {
     async function fetchContributors() {
@@ -43,6 +47,27 @@ export function ContributorDistribution({
       fetchContributors();
     }
   }, [repositoryId, accessToken]);
+
+  const { writeContract } = useWriteContract();
+
+  const addContributors = async (contributors: string[] , walletAddresses : string[] , totalBounty:number) => {
+    let getPercentageArray = contributors.map((contributor) => {
+      return contributor?.contributionPercentage;
+    });
+    setPercentageArray(getPercentageArray);
+    if(contributors.length !== walletAddresses.length){
+      console.log("Contributors and Wallet Addresses length should be same");
+      return;
+    }
+
+    writeContract({
+      mainContractABI,
+      address: mainContract,
+      functionName: "addProjectContributions",
+      args: [walletAddresses,],
+    });
+  };
+
 
   const handleWalletAddressChange = (
     contributorId: string,
@@ -159,12 +184,7 @@ export function ContributorDistribution({
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={() => {
-              // TODO: Implement distribution logic
-              console.log("Distribution data:", {
-                contributors,
-                walletAddresses,
-                totalBounty,
-              });
+              addContributors(contributors,walletAddresses,totalBounty)
             }}
           >
             Distribute Bounty
