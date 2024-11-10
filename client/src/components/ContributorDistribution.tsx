@@ -23,15 +23,17 @@ export function ContributorDistribution({
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [totalBounty, setTotalBounty] = useState<number>(1); // ETH
+  const [totalBounty, setTotalBounty] = useState<number>(0);
   const [walletAddresses, setWalletAddresses] = useState<
     Record<string, string>
   >({});
 
-  const { distributeFunds } = useDataContext();
+  const { distributeFunds, getTokenDetails } = useDataContext();
   const [tokenAddress, setTokenAddress] = useState("");
 
   const [percentageArray, setPercentageArray] = useState<number[]>([]);
+
+  const [tokenDetails , setTokenDetails] = useState<any>({}); 
 
   useEffect(() => {
     async function fetchContributors() {
@@ -53,14 +55,6 @@ export function ContributorDistribution({
       fetchContributors();
     }
   }, [repositoryId, accessToken]);
-
-  const {
-    data: hash,
-    error: hashError,
-    isPending,
-    isError,
-    writeContract,
-  } = useWriteContract();
 
   const addContributors = async (
     contributors: any[],
@@ -131,6 +125,7 @@ export function ContributorDistribution({
     );
   }
 
+
   if (error) {
     return (
       <Alert variant="destructive">
@@ -161,23 +156,40 @@ export function ContributorDistribution({
               type="text"
               value={tokenAddress}
               placeholder="Bounty Token Address"
-              onChange={(e) => setTokenAddress(e.target.value)}
+              onChange={async (e) => {
+                setTokenAddress(e.target.value);
+                if (tokenAddress) {
+                  let result = await getTokenDetails(tokenAddress);
+                  console.log("Token Details", result);
+                  setTokenDetails(result);
+                }
+              }}
               className="w-64"
             />
-
-            {/* <Select onValueChange={setToken} value={token}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Token" />
-              </SelectTrigger>
-
-              <SelectContent>
-                <SelectItem value="USDC">USDC</SelectItem>
-                <SelectItem value="USDT">USDT</SelectItem>
-                <SelectItem value="ETH">ETH</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select> */}
           </div>
+        </div>
+        <div className="p-3 flex">
+   
+          <div className="flex flex-col space-y-2">
+            <div className="flex items-center space-x-2">
+              <span className="text-md text-gray-500 font-bold">Token Name</span>
+              <span className="text-md text-green-500">
+                {tokenDetails?.name}
+              </span>
+              <span className="text-md text-gray-500 font-bold">Token Symbol</span>
+              <span className="text-md text-green-500">
+                {tokenDetails?.symbol}
+              </span>
+              <span className="text-md text-gray-500 font-bold">Token Balance</span>
+              <span className="text-md text-green-500">
+              
+
+                {tokenDetails?.balance/1e18}
+
+
+              </span>
+              </div>
+              </div>
         </div>
 
         <div className="space-y-4">
@@ -214,7 +226,7 @@ export function ContributorDistribution({
                         (contributor.contributionPercentage ?? 0)) /
                       100
                     ).toFixed(4)}{" "}
-                    ETH
+                    {tokenDetails?.symbol}
                   </div>
                 </div>
                 <Input
@@ -239,12 +251,7 @@ export function ContributorDistribution({
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={async () => {
-              // console.log("Distribute bounty",
-              //   contributors,
-              //   address,
-              //   totalBounty,
-              //   walletAddresses
-              //   );
+             
               await addContributors(contributors, walletAddresses, totalBounty);
             }}
           >

@@ -30,7 +30,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     chain?.id
   );
   const { data: walletClient, isError, isLoading } = useWalletClient();
-
+  const [tokenAddress, setTokenAddress] = useState<string>("0x0");
   useEffect(() => {
     setActiveChainId(chain?.id);
   }, [chain?.id]);
@@ -55,15 +55,25 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     }
   };
 
-  const getTokenDetails = async (tokenAddress: any) => {
+  const getTokenDetails = async (tokenAddress:string) => {
     try {
-      const tokenContract = await getContractInstance(tokenAddress, tokenAbi);
-      if (tokenContract) {
-        console.log("Token contract", tokenContract);
-        let balance = await tokenContract.balanceOf(address);
-        setTokenBalance(balance);
-        console.log("Token balance", balance);
-        return balance;
+      if (tokenAddress) {
+        const tokenContract = await getContractInstance(tokenAddress, tokenAbi);
+        let result = {
+          balance: 0,
+          name: "",
+          symbol: "",
+        };
+        if (tokenContract) {
+          console.log("Token contract", tokenContract);
+          let balance = await tokenContract.balanceOf(address);
+          result.balance = +balance.toString();
+          let name = await tokenContract.name();
+          result.name = name;
+          let symbol = await tokenContract.symbol();
+          result.symbol = symbol;
+          return result;
+        }
       }
     } catch (error) {
       console.log("Error in getting token balance");
@@ -122,6 +132,8 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     <DataContext.Provider
       value={{
         distributeFunds,
+        getTokenDetails,
+        setTokenAddress,
       }}
     >
       {children}
