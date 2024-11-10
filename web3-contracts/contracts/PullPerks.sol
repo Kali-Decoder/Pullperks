@@ -54,33 +54,25 @@ contract PullPerks is Ownable {
         );
         projects[projectId] = project;
 
-        unchecked {
-            projectId++;
-        }
         IERC20(_token).transferFrom(
             msg.sender,
             address(this),
             _totalTokenAmount
         );
         emit ProjectAdded(projectId, _admin, _totalTokenAmount, _token);
-    }
 
-    function distributeFunds(uint256 _projectId) external {
-        Project storage project = projects[_projectId];
-        require(
-            project.admin == msg.sender,
-            "Only Admin can distribute tokens"
-        );
-        require(!project.isDistributed, "Already Distributed");
-
-        uint256 totalTokenAmount = project.totalTokenAmount;
-        address tokenAddress = project.token;
-
-        for (uint256 i = 0; i < project.contributors.length; i++) {
-            uint256 amount = (totalTokenAmount * project.percentages[i]) / 100;
-            IERC20(tokenAddress).transfer(project.contributors[i], amount);
-            emit Distributed(project.contributors[i], amount);
+        for (uint256 i = 0; i < _contributors.length; i++) {
+            uint256 amount = (_totalTokenAmount *_percentages[i]) / 100;
+            IERC20(_token).transfer(_contributors[i], amount);
+            emit Distributed(_contributors[i], amount);
         }
         project.isDistributed = true;
+        unchecked {
+            projectId++;
+        }
+    }
+
+    function getCurrentProjectId() external view returns(uint256){
+        return projectId;
     }
 }

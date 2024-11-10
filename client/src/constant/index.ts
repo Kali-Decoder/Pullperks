@@ -1,4 +1,4 @@
-export const mainContract = "0xA507a2F9DB509efcA43541950Fa3A5020C7B924a";
+export const mainContract = "0x8Ec6524013D5D90531CB2f50b9d83585Ba6E1056";
 export const mainContractABI =[
   {
     "inputs": [],
@@ -130,16 +130,16 @@ export const mainContractABI =[
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "getCurrentProjectId",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "_projectId",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "distributeFunds",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {

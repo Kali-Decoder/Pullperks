@@ -55,7 +55,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     }
   };
 
-  const getTokenDetails = async (tokenAddress:string) => {
+  const getTokenDetails = async (tokenAddress: string) => {
     try {
       if (tokenAddress) {
         const tokenContract = await getContractInstance(tokenAddress, tokenAbi);
@@ -88,6 +88,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
     totalBounty: any,
     tokenAddress: any
   ) => {
+   
     try {
       let contract = await getContractInstance(mainContract, mainContractABI);
       let tokenContract = await getContractInstance(tokenAddress, tokenAbi);
@@ -116,8 +117,7 @@ const DataContextProvider: React.FC<DataContextProviderProps> = ({
         await tx.wait();
       }
 
-      let tx2 = await contract.distributeFunds(1);
-      await tx2.wait();
+      
     } catch (error) {
       console.log("Error in distributing funds");
       console.log(error);
