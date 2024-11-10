@@ -33,7 +33,7 @@ export function ContributorDistribution({
 
   const [percentageArray, setPercentageArray] = useState<number[]>([]);
 
-  const [tokenDetails , setTokenDetails] = useState<any>({}); 
+  const [tokenDetails, setTokenDetails] = useState<any>({});
 
   useEffect(() => {
     async function fetchContributors() {
@@ -125,7 +125,6 @@ export function ContributorDistribution({
     );
   }
 
-
   if (error) {
     return (
       <Alert variant="destructive">
@@ -169,27 +168,28 @@ export function ContributorDistribution({
           </div>
         </div>
         <div className="p-3 flex">
-   
           <div className="flex flex-col space-y-2">
             <div className="flex items-center space-x-2">
-              <span className="text-md text-gray-500 font-bold">Token Name</span>
+              <span className="text-md text-gray-500 font-bold">
+                Token Name
+              </span>
               <span className="text-md text-green-500">
                 {tokenDetails?.name}
               </span>
-              <span className="text-md text-gray-500 font-bold">Token Symbol</span>
+              <span className="text-md text-gray-500 font-bold">
+                Token Symbol
+              </span>
               <span className="text-md text-green-500">
                 {tokenDetails?.symbol}
               </span>
-              <span className="text-md text-gray-500 font-bold">Token Balance</span>
-              <span className="text-md text-green-500">
-              
-
-                {tokenDetails?.balance/1e18}
-
-
+              <span className="text-md text-gray-500 font-bold">
+                Token Balance
               </span>
-              </div>
-              </div>
+              <span className="text-md text-green-500">
+                {tokenDetails?.balance / 1e18}
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -251,7 +251,6 @@ export function ContributorDistribution({
           <button
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={async () => {
-             
               await addContributors(contributors, walletAddresses, totalBounty);
             }}
           >
